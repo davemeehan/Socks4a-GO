@@ -13,9 +13,8 @@ import (
 	"bufio"
 )
 func main() {
-	dst := "127.0.0.1:9050" // local socks
 	laddr, _ := net.ResolveTCPAddr("tcp","127.0.0.1")
-	raddr, _ := net.ResolveTCPAddr("tcp", dst)
+	raddr, _ := net.ResolveTCPAddr("tcp", "127.0.0.1:9050") // local socks
 	conn, err := net.DialTCP( "tcp", laddr, raddr )
 	if conn == nil {
 		fmt.Printf("Connection error: %v\n", err)
