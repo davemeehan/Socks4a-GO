@@ -1,4 +1,4 @@
-basic example of using socks4a pkg to tunnel http requests
+basic example of using socks4a to tunnel http requests
 
 after make && make install
 Usage:
