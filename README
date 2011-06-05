@@ -14,7 +14,7 @@ import (
 )
 func main() {
 	laddr, _ := net.ResolveTCPAddr("tcp","127.0.0.1")
-	raddr, _ := net.ResolveTCPAddr("tcp", "127.0.0.1:9050") // local socks
+	raddr, _ := net.ResolveTCPAddr("tcp","127.0.0.1:9050") // local socks
 	conn, err := net.DialTCP( "tcp", laddr, raddr )
 	if conn == nil {
 		fmt.Printf("Connection error: %v\n", err)
