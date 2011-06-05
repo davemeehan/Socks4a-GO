@@ -44,7 +44,6 @@ func (this *socket) read() (status bool) {
 	if count == 0 {
 		log.Printf("socks host closed connection.\n")
 	}
-	defer log.Printf("Server said: %v\n", data)
 	if data[1] == 0x5a { // success
 		return true
 	}
