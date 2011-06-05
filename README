@@ -3,18 +3,41 @@ basic example of using socks4a pkg to tunnel http requests
 after make && make install
 Usage:
 
-import "socks"
-
-dst := "127.0.0.1:9050" // local socks
-laddr, _ := net.ResolveTCPAddr("tcp","127.0.0.1")
-raddr, _ := net.ResolveTCPAddr("tcp", dst)
-conn, err := net.DialTCP( "tcp", laddr, raddr )
-if conn == nil {
-	fmt.Printf("Connection error: %v\n", err)
-	return
-}
-defer conn.Close()
-status, err := socks.Connect(conn, "google.com") // where should the socks server connect?
-if err != nil {
+package main
+import (
+	"socks"
+	"net"
+	"net/textproto"
+	"fmt"
+	"log"
+	"bufio"
+)
+func main() {
+	dst := "127.0.0.1:9050" // local socks
+	laddr, _ := net.ResolveTCPAddr("tcp","127.0.0.1")
+	raddr, _ := net.ResolveTCPAddr("tcp", dst)
+	conn, err := net.DialTCP( "tcp", laddr, raddr )
+	if conn == nil {
+		fmt.Printf("Connection error: %v\n", err)
+		return
+	}
+	defer conn.Close()
+	status, err := socks.Connect(conn, "google.com") // where should the socks server connect?
+	if err != nil {
+		log.Printf("Socks status was: %v with error: %v\n",status,err)
+	}
+	fmt.Fprintf(conn, "GET / HTTP/1.1\r\nHost:google.com") // send initial data -> socket
+	fmt.Fprintf(conn, "\r\n\r\n")
+	// read the response
+	reader := bufio.NewReader(conn)
+	tp := textproto.NewReader( reader ) // text protocol(like http) reader	
+	// infinite loop to read content from socket until EOF or other error
+	for {
+		line, err := tp.ReadLine()
+		if err != nil {
+			break // break loop on errors    
+		}
+		fmt.Printf("%s\n", line)
+	}	
 	return
 }
