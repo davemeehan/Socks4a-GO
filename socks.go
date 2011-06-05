@@ -11,8 +11,7 @@ import (
 type socket struct {
 	conn *net.TCPConn
 }
-// Request.Connect provides functionality to connect to a socks server
-// returns a status byte from socks server and an error which will be nil if no error is returned
+// Connect provides functionality to connect to a socks server
 // socks response object. Byte order for resp is: 0x00(discard) 0xXX(status) 0xXX 0xXX(2 bytes to ignore) 0xXX 0xXX 0xXX 0xXX (4 bytes to ignore)
 // socks status codes: 0x5a(90) == granted ; 0x5b(91) == rejected/failed ; 0x5c(92) == failed because missing identd ; 0x5d(93) == identd couldn't confirm identity from user ID
 func Connect(conn *net.TCPConn, domain string) (bool, os.Error) {
