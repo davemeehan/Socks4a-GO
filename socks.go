@@ -1,11 +1,12 @@
-package socks;
+package socks
+
 import (
 	"net"
 	"encoding/binary"
 	"os"
 	"log"
 	"bytes"
-);
+)
 
 type socket struct {
 	conn *net.TCPConn
@@ -17,21 +18,21 @@ type socket struct {
 func Connect(conn *net.TCPConn, domain string) (bool, os.Error) {
 	sock := new(socket)
 	sock.conn = conn
-	version := []byte { 0x04 }; // socks version 4
-	cmd := []byte { 0x01 }; // socks stream mode
-	port := 80 // destination http port
+	version := []byte{0x04} // socks version 4
+	cmd := []byte{0x01}     // socks stream mode
+	port := 80              // destination http port
 	buffer := bytes.NewBuffer([]byte{})
 	binary.Write(buffer, binary.BigEndian, version)
 	binary.Write(buffer, binary.BigEndian, cmd)
-	binary.Write(buffer, binary.BigEndian, uint16(port)) // pad port with 0x00
-	binary.Write(buffer, binary.BigEndian, []byte { 0x00, 0x00, 0x00, 0x01}) // fake ip address forces socks4a to resolve the domain below using the socks protocol
-	binary.Write(buffer, binary.BigEndian, []byte { 0x00 })
+	binary.Write(buffer, binary.BigEndian, uint16(port))                   // pad port with 0x00
+	binary.Write(buffer, binary.BigEndian, []byte{0x00, 0x00, 0x00, 0x01}) // fake ip address forces socks4a to resolve the domain below using the socks protocol
+	binary.Write(buffer, binary.BigEndian, []byte{0x00})
 	binary.Write(buffer, binary.BigEndian, []byte(domain))
-	binary.Write(buffer, binary.BigEndian, []byte{ 0x00 })
+	binary.Write(buffer, binary.BigEndian, []byte{0x00})
 	binary.Write(sock.conn, binary.BigEndian, buffer.Bytes())
-	if sock.read() == false  {
+	if sock.read() == false {
 		return false, os.NewError("Unable to connect to socks server.")
-	} 
+	}
 	return true, nil
 }
 func (this *socket) read() (status bool) {
