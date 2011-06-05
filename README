@@ -1,0 +1,20 @@
+basic example of using socks4a pkg to tunnel http requests
+
+after make && make install
+Usage:
+
+import "socks"
+
+dst := "127.0.0.1:9050" // local socks
+laddr, _ := net.ResolveTCPAddr("tcp","127.0.0.1")
+raddr, _ := net.ResolveTCPAddr("tcp", dst)
+conn, err := net.DialTCP( "tcp", laddr, raddr )
+if conn == nil {
+	fmt.Printf("Connection error: %v\n", err)
+	return
+}
+defer conn.Close()
+status, err := socks.Connect(conn, "google.com") // where should the socks server connect?
+if err != nil {
+	return
+}
